@@ -1,4 +1,5 @@
 import { products } from '../data/products.js'
+import {cart} from '../data/cart.js'
 
 renderProducts();
 addToCart();
@@ -6,7 +7,7 @@ function renderProducts() {
   let renderHTML = '';
   products.forEach(prod => {
     let prodContainer = ` 
-    <div class="product-container">
+    <div class="product-container product-container-${prod.id}">
     <div class="product-image-container">
       <img class="product-image"
         src="${prod.image}">
@@ -50,7 +51,11 @@ function renderProducts() {
       Added
     </div>
 
-    <button class="add-to-cart-button button-primary">
+    <button class="
+      add-to-cart-button 
+      button-primary 
+      data-product-name = ${prod.name}" 
+      id = ${prod.id}>
       Add to Cart
     </button>
   </div>`
@@ -59,12 +64,26 @@ function renderProducts() {
   document.querySelector('.products-grid').innerHTML = renderHTML;
 }
 
-// function addToCart () {
-//   document.querySelectorAll('.add-to-cart-button')
-//     .forEach((button) => {
-//       button.addEventListener('click', ()=>{
-//         console.log('yo');
-//       })
-//     }
-//   )
-// }
+
+function addToCart () {
+  document.querySelectorAll('.add-to-cart-button')
+    .forEach((button) => {
+      button.addEventListener('click', ()=>{
+        const prodId = button.id; 
+        let matchItem;
+
+        cart.forEach((item) => {
+          if (prodId === item.prodId) { 
+            matchItem = item;
+          }})
+
+        if (matchItem) {
+          matchItem.quantity++;
+        } 
+        else {
+          cart.push({prodId, quantity: 1})
+        }
+
+        console.log(cart)
+      })})
+}
