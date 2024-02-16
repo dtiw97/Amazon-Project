@@ -1,5 +1,5 @@
 import { products } from '../data/products.js'
-import { cart } from '../data/cart.js'
+import { cart, addToCart, cartCount } from '../data/cart.js'
 
 renderProducts();
 function renderProducts() {
@@ -63,16 +63,7 @@ function renderProducts() {
   document.querySelector('.products-grid').innerHTML = renderHTML;
 }
 
-function cartCount() {
-  let cartQuantity = 0;
-  cart.forEach((item) => {
-    cartQuantity += item.quantity;
-  })
-  document.querySelector('.cart-quantity').innerHTML = cartQuantity;
-  //console.log('cartQuantity :', cartQuantity);
-}
-
-function renderQuantity (prodId) {
+function renderQuantity(prodId) {
   document.querySelector(`.item-quantity-${prodId}`).innerHTML = `
         <option selected value="1">1</option>
         <option value="2">2</option>
@@ -85,39 +76,20 @@ function renderQuantity (prodId) {
         <option value="9">9</option>
         <option value="10">10</option>
       `
-    let prodQuantity = Number(document.querySelector(`.item-quantity-${prodId}`).value);
+  let prodQuantity = Number(document.querySelector(`.item-quantity-${prodId}`).value);
 }
 
 document.querySelectorAll('.add-to-cart-button')
   .forEach((button) => {
     button.addEventListener('click', () => {
-      
+      //specific ID, Name & Quantity based on button
       const prodId = button.id;
       const prodName = button.dataset.productName;
       let prodQuantity = Number(document.querySelector(`.item-quantity-${prodId}`).value);
       renderQuantity(prodId);
-      let matchItem;
-      //console.log('prodQuantity : ', prodQuantity);
-      cart.forEach((item) => {
-        if (prodId === item.prodId) {
-          matchItem = item;
-        }
-      })
-
-      if (matchItem) {
-        matchItem.quantity += prodQuantity;
-      } else {
-        cart.push({ 
-          prodId, prodName, 
-          quantity: prodQuantity})
-      }
-
-alert(`${prodQuantity} unit of 
-"${prodName}" 
-is added to cart`);
-      console.log(cart);
+      addToCart(prodId, prodName, prodQuantity);
       cartCount(cart);
+      //console.log('prodQuantity : ', prodQuantity);
+      //console.log(cart);
     })
   })
-
-
