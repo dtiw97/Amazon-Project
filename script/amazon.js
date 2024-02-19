@@ -1,6 +1,8 @@
 import { products } from '../data/products.js'
 import { cart, addToCart, cartCount } from '../data/cart.js'
 
+let prodQuantity = 0;
+console.log(typeof prodQuantity);
 renderProducts();
 function renderProducts() {
   let renderHTML = '';
@@ -76,7 +78,7 @@ function renderQuantity(prodId) {
         <option value="9">9</option>
         <option value="10">10</option>
       `
-  let prodQuantity = Number(document.querySelector(`.item-quantity-${prodId}`).value);
+  prodQuantity = Number(document.querySelector(`.item-quantity-${prodId}`).value);
 }
 
 document.querySelectorAll('.add-to-cart-button')
@@ -85,7 +87,7 @@ document.querySelectorAll('.add-to-cart-button')
       //specific ID, Name & Quantity based on button
       const prodId = button.id;
       const prodName = button.dataset.productName;
-      let prodQuantity = Number(document.querySelector(`.item-quantity-${prodId}`).value);
+      prodQuantity = Number(document.querySelector(`.item-quantity-${prodId}`).value);
       renderQuantity(prodId);
       addToCart(prodId, prodName, prodQuantity);
       cartCount(cart);
