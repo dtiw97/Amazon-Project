@@ -6,7 +6,6 @@ let cartHTML = '';
 // console.log('cart contains', cart);
 
 renderCart(cart);
-
 function renderCart(cart) {
   renderQuantity();
   let matchingProduct;
@@ -107,7 +106,7 @@ function renderQuantity() {
 document.querySelectorAll('.delete-quantity-link')
   .forEach((span) => {
     span.addEventListener('click', () => {
-      document.createElement("span").innerHTML = "hi";
+      //document.createElement("span").innerHTML = "hi";
       const deleteItem = span.dataset.productId;
       //console.log(deleteItem);
       removeFromCart(deleteItem);
@@ -117,40 +116,60 @@ document.querySelectorAll('.delete-quantity-link')
     })
   })
 
+function changeQuantity(updateItem, newQuantity, quantitySpanDOM) {
+  newQuantity = document.querySelector(`.quantity-input-${updateItem}`).value;
+  if (newQuantity < 1) {
+    alert('Minimum value is 1');
+    return;
+  }
+  updateQuantity(updateItem, newQuantity);
+  renderQuantity();
+  console.log('cart contains:', cart);
+  quantitySpanDOM.innerHTML = ` Quantity: <span class="quantity-label-${updateItem}">${newQuantity}</span>`;
+}
+
 document.querySelectorAll('.update-quantity-link')
   .forEach((span) => {
     span.addEventListener('click', () => {
+
       const updateItem = span.dataset.productId;
       span.classList.add('is-editing-quantity');
       let newQuantity = Number(document.querySelector(`.quantity-label-${updateItem}`).innerText);
       let quantitySpanDOM = document.querySelector(`.update-new-quantity-${updateItem}`);
-      
+      quantitySpanDOM.innerHTML =
+        ` Quantity: 
+<input 
+type=
+  "number" 
+class=
+  "quantity-input 
+  quantity-input-${updateItem}" 
+value=
+  "${newQuantity}">
+<span class=
+  "save-quantity-link 
+  link-primary">
+  Save
+</span>`;
 
-
-      quantitySpanDOM.innerHTML = ` Quantity: <input type="number" class="quantity-input quantity-input-${updateItem}" value="${newQuantity}"><span class="save-quantity-link link-primary">Save</span>`;
-
-      console.log(quantitySpanDOM);
-      console.log('newquantity :', newQuantity);
-
+      // console.log(quantitySpanDOM);
+      // console.log('newquantity :', newQuantity);
       document.querySelector(`.save-quantity-link`)
         .addEventListener('click', () => {
-          newQuantity = document.querySelector(`.quantity-input-${updateItem}`).value;
-          if (newQuantity < 1) {
-            alert('Minimum value is 1');
-            return;
-          }
-          updateQuantity(updateItem, newQuantity);
-          renderQuantity();
-          console.log('cart contains:', cart);
-          quantitySpanDOM.innerHTML = ` Quantity: <span class="quantity-label-${updateItem}">${newQuantity}</span>`;
+          changeQuantity(updateItem, newQuantity, quantitySpanDOM);
           span.classList.remove('is-editing-quantity');
-        })
-      
+      })
+
+      document.querySelector(`.quantity-input-${updateItem}`)
+        .addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            changeQuantity(updateItem, newQuantity, quantitySpanDOM);
+            span.classList.remove('is-editing-quantity');
+          }
+      })
       //console.log('item id:', updateItem);
       //console.log(quantitySpanDOM);
       //updateQuantity(updateItem);
     })
   })
 
-  
-console.clear();
