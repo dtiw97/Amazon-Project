@@ -19,7 +19,7 @@ if (!cart) [
 function saveCart () {
   localStorage.setItem('cart', JSON.stringify(cart));
   localStorage.setItem('cartQuantity', JSON.stringify(cartQuantity));
-  console.log(JSON.stringify(cartQuantity));
+  //console.log(JSON.stringify(cartQuantity));
 }
 
 export function addToCart(prodId, prodName, prodQuantity) {
@@ -48,12 +48,12 @@ saveCart();
 
 export function cartCount() {
   cartQuantity = 0;
-  console.log(cart);
+  //console.log(cart);
   cart.forEach((item) => {
     //console.log(item);
     cartQuantity += Number(item.prodQuantity);
   })
-  console.log('cartQuantity :', cartQuantity);
+  //console.log('cartQuantity :', cartQuantity);
   saveCart();
 }
 
@@ -69,4 +69,21 @@ export function removeFromCart (deleteItem) {
   //console.log('newcart', newCart);
   cartCount(cart);
   saveCart()
+}
+
+export function updateQuantity (prodId, newQuantity) {
+  let matchItem; 
+
+  cart.forEach((item) => {
+    if (prodId === item.prodId) {
+      matchItem = item;
+    }
+  })
+  //console.log('matchItem', matchItem);
+  if (matchItem) {
+    matchItem.prodQuantity = newQuantity;
+  }
+  //console.log('matchItem', matchItem);
+  cartCount();
+  saveCart();
 }

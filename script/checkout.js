@@ -1,4 +1,4 @@
-import { cart, removeFromCart, cartQuantity } from '../data/cart.js'
+import { cart, removeFromCart, cartQuantity, updateQuantity } from '../data/cart.js'
 import { products } from '../data/products.js';
 
 let cartHTML = '';
@@ -14,11 +14,12 @@ function renderCart(cart) {
   cart.forEach(item => {
     // getting Data from product.js to match items 
     const matchingId = item.prodId;
-    products.forEach(listed =>{
+    products.forEach(listed => {
       if (listed.id === matchingId) {
         matchingProduct = listed;
-      }});
-      let itemHTML = `<div class="cart-item-container-${matchingProduct.id}">
+      }
+    });
+    let itemHTML = `<div class="cart-item-container-${matchingProduct.id}">
     <div class="delivery-date">
       Delivery date: Tuesday, June 21
     </div>
@@ -32,16 +33,16 @@ function renderCart(cart) {
           ${matchingProduct.name}
         </div>
         <div class="product-price">
-          $${(matchingProduct.priceCents/100).toFixed(2)}
+          $${(matchingProduct.priceCents / 100).toFixed(2)}
         </div>
         <div class="product-quantity">
-          <span>
-            Quantity: <span class="quantity-label">${item.prodQuantity}</span>
+          <span class="update-new-quantity-${matchingProduct.id}">
+            Quantity: <span class="quantity-label-${matchingProduct.id}">${item.prodQuantity}</span>
           </span>
-          <span class="update-quantity-link link-primary">
+          <span class="update-quantity-link link-primary" data-product-id = ${matchingProduct.id}>
             Update
           </span>
-          <span class="delete-quantity-link link-primary" data-product-id= "${matchingProduct.id}">
+          <span class="delete-quantity-link link-primary" data-product-id = "${matchingProduct.id}">
             Delete
           </span>
         </div>
@@ -106,11 +107,50 @@ function renderQuantity() {
 document.querySelectorAll('.delete-quantity-link')
   .forEach((span) => {
     span.addEventListener('click', () => {
+      document.createElement("span").innerHTML = "hi";
       const deleteItem = span.dataset.productId;
+      //console.log(deleteItem);
       removeFromCart(deleteItem);
       renderQuantity();
       //console.log('cart contains', cart);
       document.querySelector(`.cart-item-container-${deleteItem}`).remove();
     })
-})
+  })
 
+document.querySelectorAll('.update-quantity-link')
+  .forEach((span) => {
+    span.addEventListener('click', () => {
+      const updateItem = span.dataset.productId;
+      span.classList.add('is-editing-quantity');
+      let newQuantity = Number(document.querySelector(`.quantity-label-${updateItem}`).innerText);
+      let quantitySpanDOM = document.querySelector(`.update-new-quantity-${updateItem}`);
+      
+
+
+      quantitySpanDOM.innerHTML = ` Quantity: <input type="number" class="quantity-input quantity-input-${updateItem}" value="${newQuantity}"><span class="save-quantity-link link-primary">Save</span>`;
+
+      console.log(quantitySpanDOM);
+      console.log('newquantity :', newQuantity);
+
+      document.querySelector(`.save-quantity-link`)
+        .addEventListener('click', () => {
+          newQuantity = document.querySelector(`.quantity-input-${updateItem}`).value;
+          if (newQuantity < 1) {
+            alert('Minimum value is 1');
+            return;
+          }
+          updateQuantity(updateItem, newQuantity);
+          renderQuantity();
+          console.log('cart contains:', cart);
+          quantitySpanDOM.innerHTML = ` Quantity: <span class="quantity-label-${updateItem}">${newQuantity}</span>`;
+          span.classList.remove('is-editing-quantity');
+        })
+      
+      //console.log('item id:', updateItem);
+      //console.log(quantitySpanDOM);
+      //updateQuantity(updateItem);
+    })
+  })
+
+  
+console.clear();

@@ -57,6 +57,14 @@
   padding-bottom: 5px;
 }
 
+.quantity-input {
+  width: 30px;
+}
+
+.is-editing-quantity {
+  display:none;
+}
+
 @media (max-width: 1000px) {
   .payment-summary {
     /* grid-row: 1 means this element will be placed into row
