@@ -103,6 +103,18 @@ function renderQuantity() {
   document.querySelector('.cart-quantity-checkout').innerHTML = `Items (${cartQuantity})`;
 }
 
+function changeQuantity(updateItem, newQuantity, quantitySpanDOM) {
+  newQuantity = document.querySelector(`.quantity-input-${updateItem}`).value;
+  if (newQuantity < 1) {
+    alert('Minimum value is 1');
+    return;
+  }
+  updateQuantity(updateItem, newQuantity);
+  renderQuantity();
+  console.log('cart contains:', cart);
+  quantitySpanDOM.innerHTML = ` Quantity: <span class="quantity-label-${updateItem}">${newQuantity}</span>`;
+}
+
 document.querySelectorAll('.delete-quantity-link')
   .forEach((span) => {
     span.addEventListener('click', () => {
@@ -116,17 +128,7 @@ document.querySelectorAll('.delete-quantity-link')
     })
   })
 
-function changeQuantity(updateItem, newQuantity, quantitySpanDOM) {
-  newQuantity = document.querySelector(`.quantity-input-${updateItem}`).value;
-  if (newQuantity < 1) {
-    alert('Minimum value is 1');
-    return;
-  }
-  updateQuantity(updateItem, newQuantity);
-  renderQuantity();
-  console.log('cart contains:', cart);
-  quantitySpanDOM.innerHTML = ` Quantity: <span class="quantity-label-${updateItem}">${newQuantity}</span>`;
-}
+
 
 document.querySelectorAll('.update-quantity-link')
   .forEach((span) => {
