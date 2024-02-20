@@ -1,4 +1,9 @@
-export let cart = [
+export let cart = JSON.parse(localStorage.getItem('cart')) ;
+export let cartQuantity = JSON.parse(localStorage.getItem('cartQuantity'));
+
+
+if (!cart) [
+  cart =
   {
     prodId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
     prodName: "Black and Gray Athletic Cotton Socks - 6 Pairs",
@@ -11,6 +16,11 @@ export let cart = [
   }
 ];
 
+function saveCart () {
+  localStorage.setItem('cart', JSON.stringify(cart));
+  localStorage.setItem('cartQuantity', JSON.stringify(cartQuantity));
+  console.log(JSON.stringify(cartQuantity));
+}
 
 export function addToCart(prodId, prodName, prodQuantity) {
   let matchItem;
@@ -29,20 +39,22 @@ export function addToCart(prodId, prodName, prodQuantity) {
     })
   }
 
-  alert(`${prodQuantity} unit of 
+  console.log(`${prodQuantity} unit of 
 "${prodName}" 
 is added to cart`);
+cartCount();
+saveCart();
 }
 
 export function cartCount() {
-  let cartQuantity = 0;
+  cartQuantity = 0;
   console.log(cart);
   cart.forEach((item) => {
-    console.log(item);
+    //console.log(item);
     cartQuantity += Number(item.prodQuantity);
   })
   console.log('cartQuantity :', cartQuantity);
-  document.querySelector('.cart-quantity').innerHTML = cartQuantity;
+  saveCart();
 }
 
 export function removeFromCart (deleteItem) {
@@ -53,6 +65,8 @@ export function removeFromCart (deleteItem) {
     } 
   });
   cart = newCart;
+  console.log(cart);
   //console.log('newcart', newCart);
+  cartCount(cart);
+  saveCart()
 }
-

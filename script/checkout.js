@@ -1,4 +1,4 @@
-import { cart, removeFromCart } from '../data/cart.js'
+import { cart, removeFromCart, cartQuantity } from '../data/cart.js'
 import { products } from '../data/products.js';
 
 let cartHTML = '';
@@ -8,6 +8,7 @@ let cartHTML = '';
 renderCart(cart);
 
 function renderCart(cart) {
+  renderQuantity();
   let matchingProduct;
   // all items in cart.
   cart.forEach(item => {
@@ -97,12 +98,19 @@ function renderCart(cart) {
   document.querySelector('.replaced-contents').innerHTML = cartHTML;
 }
 
+function renderQuantity() {
+  document.querySelector('.return-to-home-link').innerHTML = cartQuantity + ' items';
+  document.querySelector('.cart-quantity-checkout').innerHTML = `Items (${cartQuantity})`;
+}
+
 document.querySelectorAll('.delete-quantity-link')
   .forEach((span) => {
     span.addEventListener('click', () => {
       const deleteItem = span.dataset.productId;
       removeFromCart(deleteItem);
+      renderQuantity();
       //console.log('cart contains', cart);
       document.querySelector(`.cart-item-container-${deleteItem}`).remove();
     })
-  })
+})
+
