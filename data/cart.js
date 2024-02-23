@@ -99,7 +99,7 @@ export function updateDeliveryOptions (prodId, deliverId){
   })
 
   matchItem.deliverOptionsId = deliverId;
-  console.log(matchItem);
+  //console.log(cart[0]);
   cartCount();
   saveCart();
 }
