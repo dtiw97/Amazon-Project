@@ -1,20 +1,21 @@
-export let cart = JSON.parse(localStorage.getItem('cart')) ;
+export let cart = JSON.parse(localStorage.getItem('cart'))
 export let cartQuantity = JSON.parse(localStorage.getItem('cartQuantity'));
 
 
-if (!cart) [
-  cart =
-  {
+if (!cart) {
+  cart =[{
     prodId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
     prodName: "Black and Gray Athletic Cotton Socks - 6 Pairs",
     prodQuantity: 10,
+    deliverOptionsId: '1',
   },
   {
     prodId: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
     prodName: "Intermediate Size Basketball",
     prodQuantity: 5,
-  }
-];
+    deliverOptionsId: '2',
+  }]
+};
 
 function saveCart () {
   localStorage.setItem('cart', JSON.stringify(cart));
@@ -35,7 +36,8 @@ export function addToCart(prodId, prodName, prodQuantity) {
   } else {
     cart.push({
       prodId, prodName,
-      prodQuantity
+      prodQuantity,
+      deliverOptionsId: '1',
     })
   }
 
