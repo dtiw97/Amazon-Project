@@ -4,13 +4,13 @@ import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import { deliverOptions } from '../data/deliverOptions.js';
 import { toDollar } from './utils/conversions.js';
 
-let cartHTML = '';
+
 // console.log('product contains', products);
 // console.log('cart contains', cart);
 
-renderCart(cart);
-function renderCart(cart) {
-
+renderCart();
+function renderCart() {
+  let cartHTML = '';
   let matchingProduct;
   // all items in cart.
   cart.forEach(item => {
@@ -23,11 +23,11 @@ function renderCart(cart) {
       }
     });
 
-    let deliverOption=[];
+    let deliverOption = [];
     deliverOptions.forEach(option => {
-      if(option.deliverId === item.deliverOptionsId){
+      if (option.deliverId === item.deliverOptionsId) {
         deliverOption = option;
-        console.log(deliverOption);
+        //console.log(deliverOption);
       }
     });
 
@@ -66,7 +66,7 @@ function renderCart(cart) {
                 <div class="delivery-options-title">
                   Choose a delivery option:
                 </div>
-                ${renderDelivery(matchingProduct,item)}
+                ${renderDelivery(matchingProduct, item)}
               </div>
     </div>
   </div>`
@@ -75,6 +75,76 @@ function renderCart(cart) {
     renderQuantity();
   })
   document.querySelector('.replaced-contents').innerHTML = cartHTML;
+
+  //Delete Button
+  document.querySelectorAll('.delete-quantity-link')
+    .forEach((span) => {
+      span.addEventListener('click', () => {
+        //document.createElement("span").innerHTML = "hi";
+        const deleteItem = span.dataset.productId;
+        //console.log(deleteItem);
+        removeFromCart(deleteItem);
+        renderQuantity();
+        //console.log('cart contains', cart);
+        document.querySelector(`.cart-item-container-${deleteItem}`).remove();
+      })
+    })
+
+  //Update Button
+  document.querySelectorAll('.update-quantity-link')
+    .forEach((span) => {
+      span.addEventListener('click', () => {
+
+        const updateItem = span.dataset.productId;
+        span.classList.add('is-editing-quantity');
+        let newQuantity = Number(document.querySelector(`.quantity-label-${updateItem}`).innerText);
+        let quantitySpanDOM = document.querySelector(`.update-new-quantity-${updateItem}`);
+        quantitySpanDOM.innerHTML =
+          ` Quantity: <input type="number" class="quantity-input quantity-input-${updateItem}" value="${newQuantity}">
+        <span class="save-quantity-link link-primary">Save</span>`;
+
+        // console.log(quantitySpanDOM);
+        console.log('newquantity :', newQuantity);
+        document.querySelector(`.save-quantity-link`)
+          .addEventListener('click', () => {
+            newQuantity = document.querySelector(`.quantity-input-${updateItem}`).value;
+            if (newQuantity < 1) {
+              alert('Minimum value is 1');
+              return;
+            }
+            changeQuantity(updateItem, newQuantity, quantitySpanDOM);
+            span.classList.remove('is-editing-quantity');
+          })
+
+        document.querySelector(`.quantity-input-${updateItem}`)
+          .addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+              newQuantity = document.querySelector(`.quantity-input-${updateItem}`).value;
+              if (newQuantity < 1) {
+                alert('Minimum value is 1');
+                return;
+              }
+              changeQuantity(updateItem, newQuantity, quantitySpanDOM);
+              span.classList.remove('is-editing-quantity');
+            }
+          })
+        //console.log('item id:', updateItem);
+        //console.log(quantitySpanDOM);
+        //updateQuantity(updateItem);
+      })
+    })
+
+  //Delivery Options
+  document.querySelectorAll('.js-delivery-option')
+    .forEach((element) => {
+      element.addEventListener('click', () => {
+        let deliverId = element.dataset.options;
+        let prodId = element.dataset.prodId;
+        updateDeliveryOptions(prodId, deliverId);
+        renderCart();
+      })
+    })
+ 
 }
 
 function renderQuantity() {
@@ -83,32 +153,23 @@ function renderQuantity() {
 }
 
 function changeQuantity(updateItem, newQuantity, quantitySpanDOM) {
-  newQuantity = document.querySelector(`.quantity-input-${updateItem}`).value;
-  if (newQuantity < 1) {
-    alert('Minimum value is 1');
-    return;
-  }
+  
   updateQuantity(updateItem, newQuantity);
   renderQuantity();
-  console.log('cart contains:', cart);
+  console.log('cart contains:', cart[0].prodQuantity);
   quantitySpanDOM.innerHTML = ` Quantity: <span class="quantity-label-${updateItem}">${newQuantity}</span>`;
 }
 
 
-function renderDelivery(matchingProduct,item) {
-  let deliverHTML = ''; 
-
+function renderDelivery(matchingProduct, item) {
+  let deliverHTML = '';
   deliverOptions.forEach((options) => {
-    //console.log(options);
-
     const dateString = dayjs().add(options.deliverDays, 'days').format('dddd, MMMM D')
-
-    const deliverString = 
-      options.deliverCost === 0 ? 
-      'FREE' : 
-      `$${toDollar(options.deliverCost)} -`;
-
-    const checkedOption = item.deliverOptionsId === options.deliverId ? 'checked' : '' ;
+    const deliverString =
+      options.deliverCost === 0 ?
+        'FREE' :
+        `$${toDollar(options.deliverCost)} -`;
+    const checkedOption = item.deliverOptionsId === options.deliverId ? 'checked' : '';
 
     deliverHTML += `
     <div class="delivery-option js-delivery-option"
@@ -128,68 +189,7 @@ function renderDelivery(matchingProduct,item) {
     </div>
     `
   })
-
   return deliverHTML;
 }
 
-
-//Delete Button
-document.querySelectorAll('.delete-quantity-link')
-  .forEach((span) => {
-    span.addEventListener('click', () => {
-      //document.createElement("span").innerHTML = "hi";
-      const deleteItem = span.dataset.productId;
-      //console.log(deleteItem);
-      removeFromCart(deleteItem);
-      renderQuantity();
-      //console.log('cart contains', cart);
-      document.querySelector(`.cart-item-container-${deleteItem}`).remove();
-    })
-  })
-
-
-//Update Button
-document.querySelectorAll('.update-quantity-link')
-  .forEach((span) => {
-    span.addEventListener('click', () => {
-
-      const updateItem = span.dataset.productId;
-      span.classList.add('is-editing-quantity');
-      let newQuantity = Number(document.querySelector(`.quantity-label-${updateItem}`).innerText);
-      let quantitySpanDOM = document.querySelector(`.update-new-quantity-${updateItem}`);
-      quantitySpanDOM.innerHTML =
-        ` Quantity: <input type="number" class="quantity-input quantity-input-${updateItem}" value="${newQuantity}">
-        <span class="save-quantity-link link-primary">Save</span>`;
-
-      // console.log(quantitySpanDOM);
-      // console.log('newquantity :', newQuantity);
-      document.querySelector(`.save-quantity-link`)
-        .addEventListener('click', () => {
-          changeQuantity(updateItem, newQuantity, quantitySpanDOM);
-          span.classList.remove('is-editing-quantity');
-        })
-
-      document.querySelector(`.quantity-input-${updateItem}`)
-        .addEventListener('keydown', (event) => {
-          if (event.key === 'Enter') {
-            changeQuantity(updateItem, newQuantity, quantitySpanDOM);
-            span.classList.remove('is-editing-quantity');
-          }
-        })
-      //console.log('item id:', updateItem);
-      //console.log(quantitySpanDOM);
-      //updateQuantity(updateItem);
-    })
-  })
-
-//Delivery Options
-document.querySelectorAll('.js-delivery-option')
-  .forEach((element) => {
-    element.addEventListener('click', () => {
-      let deliverId = element.dataset.options;
-      let prodId = element.dataset.prodId;
-      updateDeliveryOptions(prodId,deliverId);
-    }) 
-  } 
-)
 
