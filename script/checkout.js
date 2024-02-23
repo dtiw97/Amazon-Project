@@ -1,4 +1,4 @@
-import { cart, removeFromCart, cartQuantity, updateQuantity } from '../data/cart.js'
+import { cart, removeFromCart, cartQuantity, updateQuantity, updateDeliveryOptions } from '../data/cart.js'
 import { products } from '../data/products.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
 import { deliverOptions } from '../data/deliverOptions.js';
@@ -23,21 +23,19 @@ function renderCart(cart) {
       }
     });
 
-    let deliverOption;
-
+    let deliverOption=[];
     deliverOptions.forEach(option => {
       if(option.deliverId === item.deliverOptionsId){
-        deliverOption = option
+        deliverOption = option;
+        console.log(deliverOption);
       }
-    })
+    });
 
-    console.log(deliverOption);
-
-    const dateString = dayjs().add(deliverOption.deliverDays, 'days').format('dddd, MMMM D');
+    const dateString2 = dayjs().add(deliverOption.deliverDays, 'days').format('dddd, MMMM D');
 
     let itemHTML = `<div class="cart-item-container-${matchingProduct.id}">
     <div class="delivery-date">
-      Delivery date: ${dateString}
+      Delivery date: ${dateString2}
     </div>
 
     <div class="cart-item-details-grid" id =${matchingProduct.id}>
@@ -113,11 +111,12 @@ function renderDelivery(matchingProduct,item) {
     const checkedOption = item.deliverOptionsId === options.deliverId ? 'checked' : '' ;
 
     deliverHTML += `
-    <div class="delivery-option">
+    <div class="delivery-option js-delivery-option"
+    data-options="${options.deliverId}"
+    data-prod-id="${matchingProduct.id}">
       <input type="radio" ${checkedOption}
-        class="delivery-option-input"
-        name="delivery-option-${matchingProduct.id}"
-        data-options="${options.deliverId}">
+        class="delivery-option-input "
+        name="delivery-option-${matchingProduct.id}">
         <div>
           <div class="delivery-option-date">
             ${dateString}
@@ -133,6 +132,8 @@ function renderDelivery(matchingProduct,item) {
   return deliverHTML;
 }
 
+
+//Delete Button
 document.querySelectorAll('.delete-quantity-link')
   .forEach((span) => {
     span.addEventListener('click', () => {
@@ -146,6 +147,8 @@ document.querySelectorAll('.delete-quantity-link')
     })
   })
 
+
+//Update Button
 document.querySelectorAll('.update-quantity-link')
   .forEach((span) => {
     span.addEventListener('click', () => {
@@ -155,20 +158,8 @@ document.querySelectorAll('.update-quantity-link')
       let newQuantity = Number(document.querySelector(`.quantity-label-${updateItem}`).innerText);
       let quantitySpanDOM = document.querySelector(`.update-new-quantity-${updateItem}`);
       quantitySpanDOM.innerHTML =
-        ` Quantity: 
-<input 
-type=
-  "number" 
-class=
-  "quantity-input 
-  quantity-input-${updateItem}" 
-value=
-  "${newQuantity}">
-<span class=
-  "save-quantity-link 
-  link-primary">
-  Save
-</span>`;
+        ` Quantity: <input type="number" class="quantity-input quantity-input-${updateItem}" value="${newQuantity}">
+        <span class="save-quantity-link link-primary">Save</span>`;
 
       // console.log(quantitySpanDOM);
       // console.log('newquantity :', newQuantity);
@@ -190,4 +181,15 @@ value=
       //updateQuantity(updateItem);
     })
   })
+
+//Delivery Options
+document.querySelectorAll('.js-delivery-option')
+  .forEach((element) => {
+    element.addEventListener('click', () => {
+      let deliverId = element.dataset.options;
+      let prodId = element.dataset.prodId;
+      updateDeliveryOptions(prodId,deliverId);
+    }) 
+  } 
+)
 
