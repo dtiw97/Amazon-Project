@@ -1,6 +1,6 @@
 export let cart = JSON.parse(localStorage.getItem('cart'))
 export let cartQuantity = JSON.parse(localStorage.getItem('cartQuantity'));
-
+import { products } from "./products.js";
 
 if (!cart) {
   cart =[{
@@ -57,6 +57,7 @@ export function cartCount() {
   })
   //console.log('cartQuantity :', cartQuantity);
   saveCart();
+  return cartQuantity;
 }
 
 export function removeFromCart (deleteItem) {
@@ -102,4 +103,16 @@ export function updateDeliveryOptions (prodId, deliverId){
   //console.log(cart[0]);
   cartCount();
   saveCart();
+}
+
+export function getProduct (matchingId) {
+    let matchingProduct;
+
+    products.forEach(listed => {
+      if (listed.id === matchingId) {
+        matchingProduct = listed;
+      }
+    });
+
+    return matchingProduct;
 }
