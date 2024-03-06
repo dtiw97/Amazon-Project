@@ -42,7 +42,8 @@ export function addToCart(prodId, prodName, prodQuantity) {
     matchItem.prodQuantity += prodQuantity;
   } else {
     cart.push({
-      prodId, prodName,
+      prodId, 
+      prodName,
       prodQuantity,
       deliverOptionsId: '1',
     })
