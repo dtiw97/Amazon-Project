@@ -180,7 +180,7 @@ function renderDelivery(matchingProduct, item) {
 
     const dateString = dayjs().add(options.deliverDays, 'days');
     isWeekend(dateString);
-    console.log(dateString);
+    //console.log(dateString);
     const deliverString =
       options.deliverCost === 0 ?
         'FREE' :

@@ -1,5 +1,5 @@
-import {toDollar} from "../script/utils/conversions.js"
-
+import {toDollar} from "../../script/utils/conversions.js"
+console.log('cart');
 describe('test suite: toDollar', ()=> {
   it('convert cents into dollar', () => {
     expect(toDollar(2095)).toEqual('20.95');
@@ -12,6 +12,4 @@ describe('test suite: toDollar', ()=> {
   it('rounds up to nearest cent', () => {
     expect(toDollar(2000.5)).toEqual('20.01');
   })
-
-  
 })

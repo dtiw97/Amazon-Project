@@ -89,7 +89,6 @@ document.querySelectorAll('.add-to-cart-button')
       prodQuantity = Number(document.querySelector(`.item-quantity-${prodId}`).value);
       renderQuantity(prodId);
       addToCart(prodId, prodName, prodQuantity);
-      cartCount(cart);
       document.querySelector('.cart-quantity').innerHTML = cartQuantity;
       //console.log('prodQuantity : ', prodQuantity);
       //console.log(cart);
