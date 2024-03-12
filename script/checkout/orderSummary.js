@@ -28,7 +28,9 @@ export function renderCart() {
 
     const dateString = dayjs().add(deliverOption.deliverDays, 'days');
 
-    let itemHTML = `<div class="cart-item-container-${matchingProduct.id}">
+    let itemHTML = `<div class="
+    js-cart-item-container
+    cart-item-container-${matchingProduct.id}">
     <div class="delivery-date">
       Delivery date: ${dateString.format('dddd, MMMM D')}
     </div>
@@ -44,14 +46,18 @@ export function renderCart() {
         <div class="product-price">
           $${toDollar(matchingProduct.priceCents)}
         </div>
-        <div class="product-quantity">
+        <div class="product-quantity js-product-quantity-${matchingProduct.id}">
           <span class="update-new-quantity-${matchingProduct.id}">
             Quantity: <span class="quantity-label-${matchingProduct.id}">${item.prodQuantity}</span>
           </span>
           <span class="update-quantity-link link-primary" data-product-id = ${matchingProduct.id}>
             Update
           </span>
-          <span class="delete-quantity-link link-primary" data-product-id = "${matchingProduct.id}">
+          <span class="
+          delete-quantity-link 
+          link-primary
+          js-delete-link-${matchingProduct.id}"
+          data-product-id = "${matchingProduct.id}">
             Delete
           </span>
         </div>
@@ -159,8 +165,8 @@ function isWeekend (input) {
 }
 
 function renderQuantity() {
-  document.querySelector('.return-to-home-link').innerHTML = cartQuantity + ' items';
-  document.querySelector('.cart-quantity-checkout').innerHTML = `Items (${cartQuantity})`;
+  //document.querySelector('.return-to-home-link').innerHTML = cartQuantity + ' items';
+  //document.querySelector('.cart-quantity-checkout').innerHTML = `Items (${cartQuantity})`;
 }
 
 function changeQuantity(updateItem, newQuantity, quantitySpanDOM) {
